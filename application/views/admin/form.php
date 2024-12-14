@@ -52,6 +52,32 @@
                         <input type="date" id="tanggal" name="p[tanggal]" value="<?= isset($vote) ? date('Y-m-d', strtotime($vote->tanggal)) : '' ?>" class="form-control" required>
                     </div>
                 </div>
+                <!-- <div class="mb-3 row">
+                    <label for="prodi" class="col-sm-3 col-form-label">Prodi*</label>
+                    <div class="col-sm-9">
+                        <select id="prodi" name="p[id_prodi]" class="form-control" required>
+                            <option value="" disabled>-- Pilih Prodi --</option>
+                            <?php foreach ($dropdown_prodi as $prodi): ?>
+                                <option value="<?= $prodi->id_prodi ?>" <?= isset($vote) && $vote->id_prodi == $prodi->id_prodi ? 'selected' : '' ?>>
+                                    <?= $prodi->deskripsi ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div> -->
+                <div class="mb-3 row">
+                    <label for="prodi" class="col-sm-3 col-form-label">Prodi*</label>
+                    <div class="col-sm-9">
+                        <select id="prodi" name="p[id_prodi]" class="form-control" required>
+                            <option value="" disabled <?= !isset($vote) ? 'selected' : '' ?>>-- Pilih Prodi --</option>
+                            <?php foreach ($dropdown_prodi as $prodi): ?>
+                                <option value="<?= $prodi->id_prodi ?>" <?= isset($vote) && $vote->id_prodi == $prodi->id_prodi ? 'selected' : '' ?>>
+                                    <?= $prodi->deskripsi ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
                 <div class="mb-3 row">
                     <label for="status" class="col-sm-3 col-form-label">Status</label>
                     <div class="col-sm-9 d-flex gap-3">

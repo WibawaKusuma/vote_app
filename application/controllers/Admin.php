@@ -41,13 +41,20 @@ class Admin extends CI_Controller
             'title' => 'Create Voting',
             // 'user' =>  $this->db->get_where('muser', ['email' => $this->session->userdata('email')])->row_array(),
             'no_acara' => $this->Admin_model->generate_reservation_number(),
+            'dropdown_prodi' => $this->Admin_model->get_prodi(),
+
+            // 'dropdown_prodi' => $this->Admin_model->get_all('mProdi')->result(),
             // 'package' => $package
         ];
+        // $data['dropdown_prodi'] = $this->Admin_model->get_prodi();
+
+        // print_r($data['dropdown_prodi']);
+        // exit;
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/topbar');
         $this->load->view('templates/sidebar_admin');
-        $this->load->view('admin/form');
+        $this->load->view('admin/form', $data);
         $this->load->view('templates/footer');
     }
 
@@ -87,10 +94,16 @@ class Admin extends CI_Controller
         $this->load->model('Admin_model');
         $detail_kandidat = $this->Admin_model->get_detail_kandidat($no_acara);
 
+        // print_r($detail_kandidat);
+        // exit;
+
         // Jika form disubmit
         if ($this->input->post()) {
             // Ambil data yang dikirim dari form
             $vote_data = $this->input->post('p');
+
+            // print_r($vote_data);
+            // exit;
 
             // Validasi input
             if (empty($vote_data['nama_acara']) || empty($vote_data['tanggal'])) {
@@ -121,8 +134,10 @@ class Admin extends CI_Controller
             $data['vote'] = $vote;
             $data['no_acara'] = $no_acara;
             $data['detail_kandidat'] = $detail_kandidat;
+            $data['dropdown_prodi'] = $this->Admin_model->get_prodi(); // Contoh nama model dan metode
 
-            // print_r($detail_kandidat);
+
+            // print_r($vote);
             // exit;
 
             // Tampilkan form dengan data

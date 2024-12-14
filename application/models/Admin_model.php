@@ -14,7 +14,6 @@ class Admin_model extends CI_Model
     //     return $this->db->get_where('mAcaraVoteDetail', ['id_acara' => $id_acara])->result();
     // }
 
-
     public function get_acaravote($table)
     {
         return $this->db->get($table);
@@ -89,5 +88,34 @@ class Admin_model extends CI_Model
         // Melakukan query untuk menghapus data kandidat berdasarkan id_detail
         $this->db->where('id_detail', $id_detail);
         return $this->db->delete('mAcaraVoteDetail'); // Pastikan nama tabel sesuai dengan yang Anda gunakan
+    }
+
+
+
+
+
+
+
+
+
+    public function get_all($table)
+    {
+        return $this->db->get($table);
+    }
+
+    public function get_prodi()
+    {
+        $this->db->select('id_prodi, deskripsi');  // Pilih kolom yang dibutuhkan
+        $this->db->from('mProdi');  // Nama tabel prodi
+        $this->db->order_by('id_prodi', 'ASC');  // Urutkan berdasarkan id_prodi
+        $this->db->where('deskripsi !=', 'administrasi');  // Perbaiki kondisi WHERE dengan operator !=
+        $query = $this->db->get();  // Eksekusi query
+
+        // Jika ada data, kembalikan sebagai array
+        if ($query->num_rows() > 0) {
+            return $query->result();  // Mengembalikan array objek
+        } else {
+            return [];  // Jika tidak ada data, kembalikan array kosong
+        }
     }
 }

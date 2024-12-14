@@ -14,8 +14,13 @@ class Vote extends CI_Controller
     public function index()
     {
         $this->load->model('Vote_model'); // Muat model
-        $data['kandidat'] = $this->Vote_model->get_all_kandidat(); // Panggil fungsi dari model
+
         $data['pemilih'] = $this->db->get_where('mPemilih', ['NIM' => $this->session->userdata('nim')])->row_array();
+
+        // Pastikan id_prodi diambil dari data pemilih
+        $id_prodi = $data['pemilih']['id_prodi'];
+
+        $data['kandidat'] = $this->Vote_model->get_all_kandidat($id_prodi); // Panggil fungsi dari model
 
         // print_r($data);
         // exit;
@@ -72,11 +77,35 @@ class Vote extends CI_Controller
     //     $this->load->view('vote/success_redirect', ['kandidat' => $kandidat]);
     // }
 
+    // public function hasil_vote()
+    // {
+    //     $this->load->model('Vote_model');
+    //     $kandidat_votes = $this->db->get_where('mPemilih', ['NIM' => $this->session->userdata('nim')])->row_array();
+    //     $id_prodi = $kandidat_votes['id_prodi'];
+    //     // print_r($id_prodi);
+    //     // exit;
+    //     $kandidat_votes = $this->Vote_model->get_kandidat_with_votes($id_prodi);
+    //     // print_r($kandidat_votes);
+    //     // exit;
+    //     // $kandidat_votes = 1;
+
+    //     $this->load->view('vote/hasil_vote', ['kandidat_votes' => $kandidat_votes]);
+    // }
+
     public function hasil_vote()
     {
         $this->load->model('Vote_model');
-        $kandidat_votes = $this->Vote_model->get_kandidat_with_votes();
 
-        $this->load->view('vote/success_redirect', ['kandidat_votes' => $kandidat_votes]);
+        // Ambil data id_prodi pengguna
+        $kandidat_votes = $this->db->get_where('mPemilih', ['NIM' => $this->session->userdata('nim')])->row_array();
+        // print_r($kandidat_votes);
+        // exit;
+        $id_prodi = $kandidat_votes['id_prodi'];
+
+        // Ambil hasil vote berdasarkan id_prodi
+        $kandidat_votes = $this->Vote_model->get_kandidat_with_votes($id_prodi);
+
+        // Kirim data ke view
+        $this->load->view('vote/hasil_vote', ['kandidat_votes' => $kandidat_votes]);
     }
 }

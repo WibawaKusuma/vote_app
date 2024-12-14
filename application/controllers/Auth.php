@@ -32,68 +32,76 @@ class Auth extends CI_Controller
         $password = $this->input->post('password');
 
         // Ambil data pengguna berdasarkan NIM
-        $user = $this->db->get_where('mPemilih', ['nim' => $nim])->row_array();
+        $pemilih = $this->db->get_where('mPemilih', ['nim' => $nim])->row_array();
+        // print_r($pemilih);
+        // exit;
 
         // Cek jika user ada
-        if ($user) {
+        if ($pemilih) {
+
             // Cek jika user aktif
-            if ($user['status'] == 1) {
+            if ($pemilih['status'] == 1) {
+
                 // Cek passwordnya
-                if ($password === $user['password']) {
+                if ($password === $pemilih['password']) {
                     $data = [
-                        'id_pemilih' => $user['id_pemilih'],
-                        'nim' => $user['nim'],
+                        'id_pemilih' => $pemilih['id_pemilih'],
+                        'nim' => $pemilih['nim'],
+                        'id_role' => $pemilih['id_role'],
+                        'id_prodi' => $pemilih['id_prodi'],
                     ];
                     $this->session->set_userdata($data);
 
-                    if ($user['nim'] == 123) {
+                    if ($pemilih['id_role'] == 2) {
                         redirect('admin');
                     } else {
-                        // Periksa apakah id_pemilih sudah ada di tabel trHasilVoting
-                        $pemilih = $this->db->get_where('trHasilVoting', ['id_pemilih' => $user['id_pemilih']])->row_array();
-                        if ($pemilih) {
-                            // Jika sudah memilih, arahkan ke halaman 'sudah_memilih'
-                            $this->load->view('vote/sudah_memilih');
+                        // Cek apakah tabel macaravote ada id_prodi = id_prodi dan status = 1
+                        $cek_prodi = $this->db->get_where('mAcaraVote', ['id_prodi' => $pemilih['id_prodi']])->row_array();
+                        // print_r($cek_prodi);
+                        // exit;
+                        if ($cek_prodi['status'] == 1) {
+                            // print_r($cek_prodi);
+                            // exit;
+                            // Periksa apakah id_pemilih sudah ada di tabel trHasilVoting
+                            $cek_pilih = $this->db->get_where('trHasilVoting', ['id_pemilih' => $pemilih['id_pemilih']])->row_array();
+                            if ($cek_pilih) {
+                                // Jika sudah memilih, arahkan ke halaman 'sudah_memilih'
+                                $this->load->view('vote/sudah_memilih');
+                            } else {
+                                // Jika belum memilih, arahkan ke halaman 'vote'
+                                redirect('vote');
+                            }
                         } else {
-                            // Jika belum memilih, arahkan ke halaman 'vote'
-                            redirect('vote');
+                            $this->session->set_flashdata('sweet_alert', json_encode([
+                                'type' => 'info',
+                                'title' => 'Tidak Dapat Melanjutkan!',
+                                'text' => 'Voting belum dimulai!'
+                            ]));
+                            redirect('auth');
                         }
                     }
                 } else {
-                    $this->session->set_flashdata(
-                        'message',
-                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Password salah!
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>'
-                    );
+                    $this->session->set_flashdata('sweet_alert', json_encode([
+                        'type' => 'error',
+                        'title' => 'Login Gagal!',
+                        'text' => 'Password salah!'
+                    ]));
                     redirect('auth');
                 }
             } else {
-                $this->session->set_flashdata(
-                    'message',
-                    '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Pemilih tidak aktif!
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>'
-                );
+                $this->session->set_flashdata('sweet_alert', json_encode([
+                    'type' => 'error',
+                    'title' => 'Login Gagal!',
+                    'text' => 'Pemilih tidak aktif!'
+                ]));
                 redirect('auth');
             }
         } else {
-            // Jika NIM tidak ditemukan di database
-            $this->session->set_flashdata(
-                'message',
-                '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-            NIM atau password tidak terdaftar!
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>'
-            );
+            $this->session->set_flashdata('sweet_alert', json_encode([
+                'type' => 'warning',
+                'title' => 'Login Gagal!',
+                'text' => 'NIM atau password tidak terdaftar!'
+            ]));
             redirect('auth');
         }
     }

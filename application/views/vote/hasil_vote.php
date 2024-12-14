@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hasil Vote</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -31,6 +32,11 @@
             transition: all 0.3s ease;
         }
 
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
         .card-header {
             background-color: #007bff;
             color: white;
@@ -39,7 +45,6 @@
             padding: 20px;
         }
 
-        /* Gambar Kandidat dengan efek hover */
         .card-img-top {
             width: 150px;
             height: 150px;
@@ -48,12 +53,10 @@
             margin: 0 auto;
             display: block;
             transition: transform 0.3s ease;
-            /* Efek transisi untuk gambar */
         }
 
         .card-img-top:hover {
             transform: scale(1.1);
-            /* Memperbesar gambar saat dihover */
         }
 
         .card-body {
@@ -91,6 +94,15 @@
         .container {
             max-width: 1200px;
         }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
@@ -109,14 +121,12 @@
                         // Menghitung persentase suara untuk setiap kandidat
                         $persentase = ($total_votes > 0) ? round(($k['jumlah_suara'] / $total_votes) * 100, 2) : 0;
                     ?>
-                        <div class="col-md-6 mb-6">
+                        <div class="col-md-6 mb-4">
                             <div class="card">
-                                <!-- Menambahkan Foto Kandidat dengan bentuk bulat -->
                                 <img src="<?= base_url('assets/template/img/kandidat/' .  $k['image']) ?>" class="card-img-top" alt="Foto Kandidat">
                                 <div class="card-body">
                                     <h5 class="card-title"><?= htmlspecialchars($k['nama_kandidat']) ?></h5>
                                     <p class="card-text">Jumlah Suara: <strong><?= $k['jumlah_suara'] ?></strong></p>
-                                    <!-- Progres Bar untuk persentase suara -->
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar"
                                             style="width: <?= $persentase ?>%;" aria-valuenow="<?= $persentase ?>"
@@ -132,14 +142,17 @@
             </div>
             <div class="footer">
                 <p>Total Suara Masuk: <strong><?= $total_votes ?></strong></p>
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col-md-12">
-                        <a href="<?= base_url('auth/logout') ?>" class="btn btn-primary" id="logoutButton">Logout <i class="fas fa-fw fa-sign-out-alt"></i></i></a>
+                        <a href="<?= base_url('auth/logout') ?>" class="btn btn-primary" id="logoutButton">
+                            Logout <i class="fas fa-sign-out-alt"></i>
+                        </a>
                     </div>
-                </div><br><br>
-            </div>
+                </div>
+            </div><br><br>
         </div>
     </div>
+
     <!-- Tambahkan SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

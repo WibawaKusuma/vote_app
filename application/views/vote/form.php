@@ -87,6 +87,7 @@
                             <input type="hidden" name="p[id_pemilih]" value="<?= $pemilih['id_pemilih'] ?>">
                             <input type="hidden" name="p[nim]" value="<?= $pemilih['nim'] ?>">
                             <input type="hidden" name="p[password]" value="<?= $pemilih['password'] ?>">
+                            <input type="hidden" name="p[id_prodi]" value="<?= $pemilih['id_prodi'] ?>">
                             <div class="row">
                                 <!-- Looping Kandidat -->
                                 <?php foreach ($kandidat as $index => $k): ?>
@@ -173,7 +174,8 @@
 
                 Swal.fire({
                     title: 'Konfirmasi Pilihan',
-                    text: `Apakah Anda yakin ingin memilih kandidat nomor ${selected.value}?`,
+                    // text: `Apakah Anda yakin ingin memilih kandidat nomor ${selected.value}?`,
+                    text: `Apakah Anda yakin?`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Pilih',
@@ -184,7 +186,8 @@
                     if (result.isConfirmed) {
                         Swal.fire({
                             title: 'Vote Berhasil!',
-                            text: `Terima kasih, Anda telah memilih kandidat nomor ${selected.value}!`,
+                            // text: `Terima kasih, Anda telah memilih kandidat nomor ${selected.value}!`,
+                            text: `Terima kasih, Anda telah memilih!`,
                             icon: 'success',
                             confirmButtonColor: '#007bff',
                         }).then(() => {
