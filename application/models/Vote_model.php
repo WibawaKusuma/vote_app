@@ -114,6 +114,7 @@ class Vote_model extends CI_Model
         $this->db->from('macaravotedetail a'); // Alias 'a' untuk tabel macaravotedetail
         $this->db->join('mAcaraVote b', 'a.no_acara = b.no_acara', 'left');
         $this->db->where('b.id_prodi', $id_prodi);
+        $this->db->where('b.status', 1);
         $kandidat_query = $this->db->get();
         $kandidat_data = $kandidat_query->result_array();
 
@@ -146,9 +147,9 @@ class Vote_model extends CI_Model
         }
 
         // Urutkan berdasarkan jumlah suara (desc)
-        usort($kandidat_data, function ($a, $b) {
-            return $b['jumlah_suara'] - $a['jumlah_suara'];
-        });
+        // usort($kandidat_data, function ($a, $b) {
+        //     return $b['jumlah_suara'] - $a['jumlah_suara'];
+        // });
 
         return $kandidat_data;
     }

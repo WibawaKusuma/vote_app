@@ -41,6 +41,7 @@
                                 <a href="<?= base_url('admin/delete/' . $k->no_acara) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this reservation?');">
                                     <i class="fa fa-trash"></i>
                                 </a>
+
                             </td>
 
                         </tr>

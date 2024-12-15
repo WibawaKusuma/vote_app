@@ -19,14 +19,11 @@ class Vote extends CI_Controller
 
         // Pastikan id_prodi diambil dari data pemilih
         $id_prodi = $data['pemilih']['id_prodi'];
-
         $data['kandidat'] = $this->Vote_model->get_all_kandidat($id_prodi); // Panggil fungsi dari model
 
         // print_r($data);
         // exit;
         $this->load->view('vote/form', $data);
-        // print_r($data['user']);
-        // exit;
     }
 
     public function create()

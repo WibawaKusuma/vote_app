@@ -238,4 +238,24 @@ class Admin extends CI_Controller
         // Redirect kembali ke halaman create_vote_detail dengan membawa no_acara
         redirect('admin/update_vote/' . $no_acara);
     }
+
+
+
+
+
+
+    public function delete($no_acara)
+    {
+        $this->load->model('Admin_model');
+
+        // Attempt to delete the event (vote) based on no_acara
+        if ($this->Admin_model->delete_vote($no_acara)) {
+            $this->session->set_flashdata('success', 'Acara berhasil dihapus!');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal menghapus acara!');
+        }
+
+        // Redirect back to the admin dashboard
+        redirect('admin');
+    }
 }

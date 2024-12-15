@@ -118,4 +118,11 @@ class Admin_model extends CI_Model
             return [];  // Jika tidak ada data, kembalikan array kosong
         }
     }
+
+    public function delete_vote($no_acara)
+    {
+        // Delete the vote from the table based on no_acara
+        $this->db->where('no_acara', $no_acara);
+        return $this->db->delete('mAcaraVote');
+    }
 }
