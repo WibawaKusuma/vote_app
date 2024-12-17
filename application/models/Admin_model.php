@@ -125,4 +125,16 @@ class Admin_model extends CI_Model
         $this->db->where('no_acara', $no_acara);
         return $this->db->delete('mAcaraVote');
     }
+
+    public function get_detail_kandidat_by_id($id_detail)
+    {
+        $this->db->where('id_detail', $id_detail);
+        return $this->db->get('mAcaraVoteDetail')->row(); // Mengembalikan satu baris sebagai object
+    }
+
+    public function update_kandidat($id_detail, $data)
+    {
+        $this->db->where('id_detail', $id_detail);
+        return $this->db->update('mAcaraVoteDetail', $data);
+    }
 }

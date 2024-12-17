@@ -136,6 +136,7 @@
                                                     data-id="<?= $kandidat->id_detail ?>"
                                                     data-no-acara="<?= $no_acara ?>">
                                                 </button>
+                                                <a href="<?php echo base_url('admin/update_kandidat/' . $kandidat->id_detail) ?>" class="btn btn-warning fa fa-pen"></a>
                                             </td>
                                             <td style="width: 30%;"><?= htmlspecialchars($kandidat->nama_kandidat); ?></td>
                                             <td style="width: 30%;"><?= nl2br(htmlspecialchars($kandidat->visi)); ?></td>
@@ -205,7 +206,7 @@
                                 <input type="file" id="image" name="image" class="form-control" accept="image/*" <?= empty($acara) ? 'required' : '' ?>>
                                 <?php if (!empty($acara) && !empty($acara->image)): ?>
                                     <div class="mt-2">
-                                        <img src="<?= base_url('assets/template/img/acara/' . $acara->image) ?>" class="img-thumbnail" width="150" alt="Current Image">
+                                        <img src="<?= base_url('./assets/template/img/kandidat/' . $acara->image) ?>" class="img-thumbnail" width="150" alt="Current Image">
                                         <input type="hidden" name="old_image" value="<?= $acara->image ?>">
                                     </div>
                                 <?php endif; ?>

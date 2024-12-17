@@ -6,11 +6,12 @@ class Admin extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        // $this->load->library('session');
-        // $this->load->library('form_validation');
+        $this->load->library('session');
+        $this->load->library('upload');
+        $this->load->library('form_validation');
 
-        $this->load->library(['form_validation', 'upload', 'session']);
-        $this->load->helper(['form', 'url']);
+        // $this->load->library(['form_validation', 'upload', 'session']);
+        // $this->load->helper(['form', 'url']);
 
 
         $this->load->model('Admin_model');
@@ -238,6 +239,102 @@ class Admin extends CI_Controller
         // Redirect kembali ke halaman create_vote_detail dengan membawa no_acara
         redirect('admin/update_vote/' . $no_acara);
     }
+
+
+
+    public function update_kandidat($id_detail)
+    {
+        $detail_kandidat = $this->Admin_model->get_detail_kandidat_by_id($id_detail);
+
+        if (!$detail_kandidat) {
+            show_404(); // Jika data tidak ditemukan, tampilkan error 404
+        }
+
+        // Jika form disubmit, update data
+        if ($this->input->server('REQUEST_METHOD') === 'POST') {
+            $data = [
+                'nama_kandidat' => $this->input->post('nama_kandidat'),
+                'visi' => $this->input->post('visi'),
+                'misi' => $this->input->post('misi'),
+                // 'updated_at' => date('Y-m-d H:i:s') // Update waktu perubahan
+            ];
+
+            // Validasi input
+            $this->form_validation->set_rules('nama_kandidat', 'Nama Kandidat', 'required');
+            $this->form_validation->set_rules('visi', 'Visi', 'required');
+            $this->form_validation->set_rules('misi', 'Misi', 'required');
+
+            if ($this->form_validation->run() == FALSE) {
+                $this->session->set_flashdata('error', validation_errors());
+                redirect(current_url()); // Redirect untuk menampilkan pesan error
+                return;
+            }
+
+            // Ambil data kandidat lama untuk mendapatkan nama file gambar yang lama
+            $old_image_path = './assets/template/img/kandidat/' . $detail_kandidat->image;
+
+            // Konfigurasi upload gambar
+            $config['upload_path'] = './assets/template/img/kandidat';
+            $config['allowed_types'] = 'jpeg|jpg|png|gif';
+            $config['file_name'] = time() . '_' . $_FILES['image']['name']; // Nama file unik
+            $config['overwrite'] = FALSE;
+            $config['max_size'] = 2048; // 2MB
+
+            // Load library upload
+            $this->load->library('upload', $config);
+
+            // Cek apakah ada file yang di-upload
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                // Lakukan upload file
+                if (!$this->upload->do_upload('image')) {
+                    // Jika upload gagal
+                    $error = $this->upload->display_errors();
+                    $this->session->set_flashdata('error', "Upload image gagal! Error: " . $error);
+                    redirect(current_url());
+                } else {
+                    // Jika upload berhasil
+                    $upload_data = $this->upload->data(); // Ambil data file yang di-upload
+                    $data['image'] = $upload_data['file_name']; // Simpan nama file ke data
+
+                    // Hapus gambar lama jika ada
+                    if (file_exists($old_image_path)) {
+                        unlink($old_image_path); // Hapus gambar lama
+                    }
+                }
+            } else {
+                // Jika tidak ada gambar baru, tetap gunakan gambar lama
+                $data['image'] = $detail_kandidat->image; // Tetap menggunakan gambar lama
+            }
+
+            // Update data kandidat di database
+            $update = $this->Admin_model->update_kandidat($id_detail, $data);
+
+            if ($update) {
+                $this->session->set_flashdata('success', 'Data kandidat berhasil diperbarui.');
+                redirect('admin/update_vote/' . $detail_kandidat->no_acara); // Redirect ke halaman update_vote
+            } else {
+                $this->session->set_flashdata('error', 'Gagal memperbarui data kandidat.');
+                redirect(current_url()); // Redirect kembali ke form jika gagal
+            }
+        }
+
+        // Siapkan data untuk view
+        $data['title'] = 'Update Kandidat';
+        $data['detail_kandidat'] = $detail_kandidat;
+
+        // Tampilkan form dengan data
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/topbar');
+        $this->load->view('templates/sidebar_admin');
+        $this->load->view('admin/form_update', $data);
+        $this->load->view('templates/footer');
+    }
+
+
+
+
+
+
 
 
 
