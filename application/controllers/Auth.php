@@ -31,7 +31,6 @@ class Auth extends CI_Controller
         $nim = $this->input->post('nim');
         $password = $this->input->post('password');
 
-        // Ambil data pengguna berdasarkan NIM
         $pemilih = $this->db->get_where('mPemilih', ['nim' => $nim])->row_array();
         // print_r($pemilih);
         // exit;
@@ -55,20 +54,14 @@ class Auth extends CI_Controller
                     if ($pemilih['id_role'] == 2) {
                         redirect('admin');
                     } else {
-                        // Cek apakah tabel macaravote ada id_prodi = id_prodi dan status = 1
+                        // Cek id prodi
                         $cek_prodi = $this->db->get_where('mAcaraVote', ['id_prodi' => $pemilih['id_prodi']])->row_array();
-                        // print_r($cek_prodi);
-                        // exit;
                         if ($cek_prodi['status'] == 1) {
-                            // print_r($cek_prodi);
-                            // exit;
-                            // Periksa apakah id_pemilih sudah ada di tabel trHasilVoting
+
                             $cek_pilih = $this->db->get_where('trHasilVoting', ['id_pemilih' => $pemilih['id_pemilih']])->row_array();
                             if ($cek_pilih) {
-                                // Jika sudah memilih, arahkan ke halaman 'sudah_memilih'
                                 $this->load->view('vote/sudah_memilih');
                             } else {
-                                // Jika belum memilih, arahkan ke halaman 'vote'
                                 redirect('vote');
                             }
                         } else {

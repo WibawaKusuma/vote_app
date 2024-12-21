@@ -1,4 +1,3 @@
-<!-- Alert for success message -->
 <?php if ($this->session->flashdata('success')): ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
         <?= $this->session->flashdata('success') ?>
@@ -52,15 +51,14 @@
     </div>
 </div>
 
-<!-- jQuery inclusion -->
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Script for the alert -->
+
 <script>
-    // Set a timeout to hide the alert after 5 seconds
     $(document).ready(function() {
         setTimeout(function() {
             $('#success-alert').fadeOut('slow');
-        }, 3000); // 5000 milliseconds = 5 seconds
+        }, 3000);
     });
 </script>

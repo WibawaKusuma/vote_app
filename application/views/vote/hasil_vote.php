@@ -114,7 +114,6 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <!-- Looping Kandidat -->
                     <?php
                     $total_votes = array_sum(array_column($kandidat_votes, 'jumlah_suara')); // Total semua suara
                     foreach ($kandidat_votes as $k) :
@@ -153,12 +152,11 @@
         </div>
     </div>
 
-    <!-- Tambahkan SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const logoutButton = document.getElementById('logoutButton');
         logoutButton.addEventListener('click', function(e) {
-            e.preventDefault(); // Mencegah aksi default redirect
+            e.preventDefault();
 
             Swal.fire({
                 title: 'Terima Kasih!',
@@ -167,7 +165,7 @@
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#007bff',
             }).then(() => {
-                // Redirect ke URL logout setelah SweetAlert selesai
+
                 window.location.href = "<?= base_url('auth/logout') ?>";
             });
         });

@@ -170,7 +170,6 @@
 
 
 <?php if (isset($vote)) { ?>
-    <!-- Modal Form Kandidat -->
     <div class="modal fade" id="modalTambahKandidat" tabindex="-1" aria-labelledby="modalTambahKandidatLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -179,7 +178,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Form untuk tambah kandidat -->
                     <form action="<?= base_url('admin/create_vote_detail/' . $no_acara) ?>" method="post" id="formTambahKandidat" enctype="multipart/form-data">
                         <div class="mb-3 row" hidden>
                             <label for="no_acara" class="col-sm-3 col-form-label">Nomor Acara</label>
@@ -200,7 +198,6 @@
                             <textarea name="d[misi]" class="form-control" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <!-- Form Group untuk Upload Image -->
                             <label for="image" class="col-sm-2 col-form-label">Gambar</label>
                             <div class="col-sm-6">
                                 <input type="file" id="image" name="image" class="form-control" accept="image/*" <?= empty($acara) ? 'required' : '' ?>>
@@ -227,35 +224,28 @@
 
 <?php } ?>
 
-<!-- Menambahkan Bootstrap dan SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Menampilkan modal saat tombol TambahKandidat diklik
     document.getElementById('TambahKandidat').addEventListener('click', function(e) {
         e.preventDefault();
         var myModal = new bootstrap.Modal(document.getElementById('modalTambahKandidat'));
         myModal.show();
     });
 
-    // Menangani pengiriman form submit_detail
     document.getElementById('submit_detail').addEventListener('click', function(e) {
-        e.preventDefault(); // Mencegah form submit jika diperlukan untuk validasi atau pengolahan lainnya
 
-        // Kirim form hanya dari modal
         document.getElementById('formTambahKandidat').submit();
     });
 
-    // Menunggu klik pada tombol hapus
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function(e) {
-            e.preventDefault(); // Mencegah pengalihan halaman saat tombol ditekan
+            e.preventDefault();
 
             const kandidatId = this.getAttribute('data-id');
             const noAcara = this.getAttribute('data-no-acara');
 
-            // Menampilkan konfirmasi SweetAlert
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Data kandidat ini akan dihapus!",
@@ -267,23 +257,22 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Jika pengguna memilih konfirmasi, redirect ke URL penghapusan
                     window.location.href = `<?= base_url('admin/hapus_kandidat/') ?>${kandidatId}/${noAcara}`;
                 }
             });
         });
     });
 
-    // Menunggu beberapa detik untuk menghilangkan alert
+
     setTimeout(function() {
         var alert = document.getElementById('success-alert');
         if (alert) {
             alert.classList.remove('show');
             alert.classList.add('fade');
-            // Menghapus alert setelah efek fade
+
             setTimeout(function() {
                 alert.remove();
-            }, 500); // Waktu untuk efek fade, misalnya 500ms
+            }, 500);
         }
-    }, 5000); // 5000ms = 5 detik
+    }, 5000); //5 detik
 </script>

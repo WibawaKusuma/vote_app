@@ -17,7 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        // Tampilkan SweetAlert dan arahkan setelah 3 detik
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 title: '<?= $this->session->flashdata('success'); ?>',
@@ -26,7 +25,6 @@
                 showConfirmButton: false,
                 timer: 3000,
                 willClose: () => {
-                    // Redirect ke halaman vote setelah SweetAlert ditutup
                     window.location.href = "<?= base_url('vote/hasil_vote'); ?>";
                 }
             });
@@ -35,7 +33,7 @@
 </head>
 
 <body>
-    <!-- Halaman kosong karena semua ditangani oleh SweetAlert -->
+
 </body>
 
 </html>

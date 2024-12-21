@@ -7,34 +7,28 @@
                 </div>
                 <div class="card-body">
                     <form id="formUpdateKandidat" method="POST" enctype="multipart/form-data" action="<?= base_url('admin/update_kandidat/' . $detail_kandidat->id_detail); ?>">
-                        <!-- ID Detail (Hidden) -->
                         <input type="hidden" id="id_detail" name="id_detail" value="<?= $detail_kandidat->id_detail; ?>">
 
-                        <!-- No Acara -->
                         <div class="mb-3">
                             <label for="no_acara" class="form-label">No Acara</label>
                             <input type="text" class="form-control" id="no_acara" name="no_acara" value="<?= $detail_kandidat->no_acara; ?>" readonly>
                         </div>
 
-                        <!-- Nama Kandidat -->
                         <div class="mb-3">
                             <label for="nama_kandidat" class="form-label">Nama Kandidat</label>
                             <input type="text" class="form-control" id="nama_kandidat" name="nama_kandidat" value="<?= $detail_kandidat->nama_kandidat; ?>" required>
                         </div>
 
-                        <!-- Visi -->
                         <div class="mb-3">
                             <label for="visi" class="form-label">Visi</label>
                             <textarea class="form-control" id="visi" name="visi" rows="2" required><?= $detail_kandidat->visi; ?></textarea>
                         </div>
 
-                        <!-- Misi -->
                         <div class="mb-3">
                             <label for="misi" class="form-label">Misi</label>
                             <textarea class="form-control" id="misi" name="misi" rows="3" required><?= $detail_kandidat->misi; ?></textarea>
                         </div>
 
-                        <!-- Foto Kandidat -->
                         <div class="mb-3">
                             <label for="image" class="form-label">Foto Kandidat</label>
                             <input type="file" class="form-control" id="image" name="image">
@@ -45,7 +39,6 @@
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
                         <div class="mb-3 text-center">
                             <button type="submit" class="btn btn-primary">Perbarui Kandidat</button>
                         </div>

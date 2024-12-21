@@ -13,13 +13,11 @@ class Vote extends CI_Controller
 
     public function index()
     {
-        $this->load->model('Vote_model'); // Muat model
+        $this->load->model('Vote_model');
 
         $data['pemilih'] = $this->db->get_where('mPemilih', ['NIM' => $this->session->userdata('nim')])->row_array();
-
-        // Pastikan id_prodi diambil dari data pemilih
         $id_prodi = $data['pemilih']['id_prodi'];
-        $data['kandidat'] = $this->Vote_model->get_all_kandidat($id_prodi); // Panggil fungsi dari model
+        $data['kandidat'] = $this->Vote_model->get_all_kandidat($id_prodi);
 
         // print_r($data);
         // exit;
@@ -28,48 +26,62 @@ class Vote extends CI_Controller
 
     public function create()
     {
-        $data = $this->input->post('p');
+        // Ambil data pemilih berdasarkan sesi
+        $data['pemilih'] = $this->db->get_where('mPemilih', ['NIM' => $this->session->userdata('nim')])->row_array();
+
+        if (!$data['pemilih']) {
+            $this->session->set_flashdata('error', 'Data pemilih tidak ditemukan.');
+            redirect('vote');
+            return;
+        }
+
+        // Ambil input dari form
+        $dataInput = $this->input->post('p');
 
         // Validasi keberadaan data
-        if (!isset($data['id_pemilih']) || !isset($data['nim'])) {
+        if (!isset($dataInput['nim']) || !isset($dataInput['password'])) {
             $this->session->set_flashdata('error', 'Data pemilih tidak lengkap.');
             redirect('vote');
             return;
         }
 
-        $data['Created_at'] = date('Y-m-d H:i:s');
-        $data['sudah_memilih'] = 1;
+        // Tambahkan data lainnya
+        $dataInput['Created_at'] = date('Y-m-d H:i:s');
+        $dataInput['sudah_memilih'] = 1;
+
+        // Data untuk update tabel mPemilih
+        $data2 = ['sudah_memilih' => 1];
 
         // Cek apakah id_pemilih sudah ada dalam database
-        if ($this->Vote_model->is_transaction_exists($data['id_pemilih'])) {
+        if ($this->Vote_model->is_transaction_exists($data['pemilih']['id_pemilih'])) {
             $this->session->set_flashdata('error', 'Anda sudah memilih!<br>Voting ganda tidak diperbolehkan!');
             redirect('vote/hasil_vote');
             return;
         }
 
+        // Hash nim dan password untuk keamanan
+        $dataInput['nim'] = password_hash($dataInput['nim'], PASSWORD_BCRYPT);
+        $dataInput['password'] = password_hash($dataInput['password'], PASSWORD_BCRYPT);
 
+        // Transaksi untuk memastikan data tersimpan dan terupdate dengan benar
+        $this->db->trans_start();
 
-        // Hash nim sebelum menyimpan
-        $data['nim'] = password_hash($data['nim'], PASSWORD_BCRYPT);
-        $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-        $data['id_pemilih'] = password_hash($data['id_pemilih'], PASSWORD_BCRYPT);
+        // Insert data ke tabel trhasilVoting
+        $this->Vote_model->insert_data($dataInput, 'trhasilVoting');
 
-        // print_r($data);
-        // exit;
+        // Update data ke tabel mPemilih
+        $this->db->where('id_pemilih', $data['pemilih']['id_pemilih']);
+        $this->db->update('mPemilih', $data2);
 
-        // Insert data ke database
-        if ($this->Vote_model->insert_data($data, 'trhasilVoting')) {
+        $this->db->trans_complete();
 
-            // print_r($data);
-            // exit;
-            $this->session->set_flashdata('success', 'Vote berhasil disubmit!');
-            // $this->load->view('vote/success_redirect');
-            redirect('vote/hasil_vote');
-
-            return;
-        } else {
-            $this->session->set_flashdata('error', 'Gagal menyimpan vote. Silakan coba lagi.');
+        // Cek status transaksi
+        if ($this->db->trans_status() === FALSE) {
+            $this->session->set_flashdata('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
             redirect('vote');
+        } else {
+            $this->session->set_flashdata('success', 'Vote berhasil disubmit dan status diperbarui!');
+            redirect('vote/hasil_vote');
         }
     }
 
@@ -77,16 +89,12 @@ class Vote extends CI_Controller
     {
         $this->load->model('Vote_model');
 
-        // Ambil data id_prodi pengguna
         $kandidat_votes = $this->db->get_where('mPemilih', ['NIM' => $this->session->userdata('nim')])->row_array();
         // print_r($kandidat_votes);
         // exit;
         $id_prodi = $kandidat_votes['id_prodi'];
 
-        // Ambil hasil vote berdasarkan id_prodi
         $kandidat_votes = $this->Vote_model->get_kandidat_with_votes($id_prodi);
-
-        // Kirim data ke view
         $this->load->view('vote/hasil_vote', ['kandidat_votes' => $kandidat_votes]);
     }
 }
